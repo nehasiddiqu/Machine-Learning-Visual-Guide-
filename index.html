@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Machine Learning, Explained for IB Computer Science</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--ink:#14213d;--mute:#53607a;--line:#d5dcea;--a:#2f5bea;--b:#ff6b4a;--c:#12a77d;--hi:#ffe66d;--grid:#e3e9f4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1424;--card:#171f36;--ink:#e8edfb;--mute:#9ba8c7;--line:#2b3656;--a:#7b9bff;--b:#ff8a6e;--c:#3fd1a2;--hi:#6b5d00;--grid:#161e34;color-scheme:dark}}
+*{box-sizing:border-box}html{scroll-padding-top:70px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--ink);font:17px/1.6 "Nunito Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.8rem);font-weight:800}h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800}h3{font-size:1.2rem;font-weight:600}
+a{color:var(--a)}
+nav{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top,0px));display:flex;gap:6px;overflow-x:auto;white-space:nowrap}
+nav a{text-decoration:none;color:var(--ink);padding:5px 12px;border-radius:99px;font-size:.9rem;font-weight:700;border:1px solid var(--line)}
+nav a:hover,nav a:focus-visible{background:var(--a);color:#fff;outline:none}
+header,section{max-width:920px;margin:0 auto;padding:36px 18px}
+header{padding-top:56px}
+.lead{font-size:1.2rem;color:var(--mute);max-width:60ch}
+.hl{background:var(--hi);padding:0 .25em}
+.level{display:inline-block;font-weight:700;font-size:.85rem;padding:2px 10px;border-radius:6px;color:#fff;margin-bottom:8px}
+.l1{background:var(--c)}.l2{background:var(--a)}.l3{background:var(--b)}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:18px;box-shadow:5px 5px 0 var(--ink)}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin:18px 0}
+.life{border-left:5px solid var(--b);background:var(--card);padding:10px 14px;border-radius:0 10px 10px 0;margin:14px 0}
+.exam{border-left:5px solid var(--a);background:var(--card);padding:10px 14px;border-radius:0 10px 10px 0;margin:14px 0}
+.life b,.exam b{display:block;font-family:"Bricolage Grotesque",sans-serif}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--ink);font:600 12px "Nunito Sans",sans-serif}
+.pt{fill:var(--a)}.pt2{fill:var(--b)}.pt3{fill:var(--c)}
+.ctl{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0;font-weight:700}
+input[type=range]{accent-color:var(--a);flex:1;min-width:140px}
+button{font:700 1rem "Nunito Sans",sans-serif;background:var(--a);color:#fff;border:2px solid var(--ink);border-radius:10px;padding:8px 16px;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+table{border-collapse:collapse;width:100%;text-align:center}td,th{border:2px solid var(--ink);padding:10px}
+.tp{background:color-mix(in srgb,var(--c) 35%,transparent)}.fp{background:color-mix(in srgb,var(--b) 35%,transparent)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:16px 0}
+.flow div{flex:1;min-width:130px;background:var(--card);border:2px solid var(--ink);border-radius:10px;padding:10px;font-size:.92rem}
+.flow div b{display:block;font-family:"Bricolage Grotesque",sans-serif}
+.big{font-family:"Bricolage Grotesque",sans-serif;font-size:1.5rem;font-weight:800}
+footer{text-align:center;color:var(--mute);padding:30px 18px 50px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<nav aria-label="Sections">
+<a href="#what">What is ML?</a><a href="#types">Types</a><a href="#flow">Workflow</a><a href="#reg">Regression</a><a href="#cls">Classification</a><a href="#clu">Clustering</a><a href="#fit">Over/underfitting</a><a href="#eval">Evaluation</a><a href="#nn">Neural nets</a><a href="#dl">Deep learning</a><a href="#rl">Reinforcement</a><a href="#ethics">Ethics</a>
+</nav>
+
+<header>
+<span class="level l1">Start here</span>
+<h1>Machine Learning, <span class="hl">drawn out</span></h1>
+<p class="lead">Everything from “what even is ML?” to neural networks and ethics, with pictures, tiny interactive demos and examples from your own phone. Built to match the machine learning content in IB Computer Science.</p>
+<p><b>How to use this page:</b> <span style="color:var(--c)">●</span> green = basics, <span style="color:var(--a)">●</span> blue = core, <span style="color:var(--b)">●</span> orange = advanced.</p>
+</header>
+
+<section id="what">
+<span class="level l1">Basics</span>
+<h2>What is machine learning?</h2>
+<p>In normal programming <b>you</b> write the rules. In machine learning the computer <b>finds the rules</b> by studying examples.</p>
+<svg viewBox="0 0 700 150" role="img" aria-label="Traditional programming: data plus rules gives answers. Machine learning: data plus answers gives rules.">
+<g fill="none" stroke="var(--ink)" stroke-width="2"><rect x="20" y="15" width="300" height="50" rx="8"/><rect x="380" y="15" width="300" height="50" rx="8"/></g>
+<text x="40" y="45">Traditional: Data + Rules → Answers</text><text x="400" y="45">Machine learning: Data + Answers → Rules</text>
+<text x="20" y="100">Rules written by hand: “if the email has ‘WIN MONEY’, it’s spam”.</text>
+<text x="20" y="125">ML rule learned from 10,000 labelled emails: the computer works out which patterns signal spam.</text>
+</svg>
+<div class="grid">
+<div class="card"><h3>AI</h3>Any machine doing something that seems smart (a chess bot).</div>
+<div class="card"><h3>Machine learning</h3>A part of AI where systems <i>learn from data</i> (Spotify picking songs).</div>
+<div class="card"><h3>Deep learning</h3>A part of ML using many-layered neural networks (face unlock).</div>
+</div>
+<div class="life"><b>Real life</b>Your teacher can’t write rules for every handwriting style. A phone app instead learns from millions of handwriting samples.</div>
+<div class="exam"><b>Exam tip</b>Define key terms precisely: <i>model</i> (what is learned), <i>training data</i> (examples used to learn), <i>feature</i> (an input measurement), <i>label</i> (the correct answer).</div>
+</section>
+
+<section id="types">
+<span class="level l1">Basics</span>
+<h2>Three ways machines learn</h2>
+<div class="grid">
+<div class="card"><h3>Supervised</h3><svg viewBox="0 0 200 90"><circle class="pt" cx="30" cy="30" r="9"/><circle class="pt2" cx="30" cy="62" r="9"/><text x="48" y="34">cat</text><text x="48" y="66">dog</text><text x="110" y="48">labelled!</text></svg>Learn from examples <b>with answers</b>. <i>Example:</i> predicting your exam grade from hours studied.</div>
+<div class="card"><h3>Unsupervised</h3><svg viewBox="0 0 200 90"><circle class="pt3" cx="30" cy="30" r="9"/><circle class="pt3" cx="50" cy="45" r="9"/><circle class="pt3" cx="30" cy="60" r="9"/><circle class="pt" cx="140" cy="30" r="9"/><circle class="pt" cx="160" cy="50" r="9"/><text x="70" y="85">no labels</text></svg>Find <b>hidden groups</b> with no answers given. <i>Example:</i> Netflix grouping viewers with similar taste.</div>
+<div class="card"><h3>Reinforcement</h3><svg viewBox="0 0 200 90"><text x="10" y="35">Agent → action</text><text x="10" y="65">← reward / penalty</text></svg>Learn by <b>trial, error and rewards</b>. <i>Example:</i> a game bot learning to beat a level.</div>
+</div>
+</section>
+
+<section id="flow">
+<span class="level l2">Core</span>
+<h2>The ML workflow</h2>
+<div class="flow">
+<div><b>1. Collect data</b>Survey, sensors, app logs</div><div><b>2. Clean it</b>Fix gaps, remove errors</div><div><b>3. Choose features</b>Which inputs matter?</div><div><b>4. Split</b>Train 80% / Test 20%</div><div><b>5. Train</b>Model learns patterns</div><div><b>6. Evaluate</b>Test on unseen data</div><div><b>7. Deploy &amp; monitor</b>Use it, keep checking</div>
+</div>
+<svg viewBox="0 0 700 60" role="img" aria-label="Data split into 80 percent training and 20 percent testing"><rect x="10" y="10" width="540" height="36" fill="var(--a)" rx="6"/><rect x="552" y="10" width="138" height="36" fill="var(--b)" rx="6"/><text x="30" y="33" fill="#fff" style="fill:#fff">Training set: the model studies this</text><text x="565" y="33" style="fill:#fff">Test set</text></svg>
+<div class="life"><b>Real life</b>Studying from past papers (training) then sitting a brand-new paper (testing). If you only memorised the past papers answers, the new paper exposes you.</div>
+</section>
+
+<section id="reg">
+<span class="level l2">Core</span>
+<h2>Regression: predicting a number</h2>
+<p>Predict a <b>continuous value</b>: score, price, temperature. Linear regression draws the best straight line through the points: <b>score = m × hours + b</b>. Drag the sliders to fit the line yourself. The error (average squared gap) is what training tries to shrink.</p>
+<div class="card">
+<svg id="regsvg" viewBox="0 0 440 260" role="img" aria-label="Scatter plot of study hours against score with adjustable line"></svg>
+<div class="ctl"><label for="m">Slope m: <span id="mv"></span></label><input id="m" type="range" min="0" max="15" step=".1" value="2"></div>
+<div class="ctl"><label for="b">Intercept b: <span id="bv"></span></label><input id="b" type="range" min="20" max="70" step=".5" value="60"></div>
+<div class="big">Error (MSE): <span id="mse"></span> <span id="msg" style="font-size:1rem"></span></div>
+</div>
+<div class="life"><b>Real life</b>Predicting a taxi fare in Dubai from distance, or your IA mark from time spent.</div>
+</section>
+
+<section id="cls">
+<span class="level l2">Core</span>
+<h2>Classification: choosing a category</h2>
+<p>Predict a <b>label</b>: spam or not spam, pass or fail. Two classic methods:</p>
+<div class="grid">
+<div class="card"><h3>k-Nearest Neighbours</h3>
+<svg viewBox="0 0 220 170" role="img" aria-label="k nearest neighbours example"><circle class="pt" cx="40" cy="40" r="7"/><circle class="pt" cx="70" cy="60" r="7"/><circle class="pt" cx="55" cy="95" r="7"/><circle class="pt2" cx="160" cy="50" r="7"/><circle class="pt2" cx="180" cy="110" r="7"/><circle class="pt2" cx="140" cy="130" r="7"/><circle cx="105" cy="85" r="9" fill="none" stroke="var(--ink)" stroke-width="3"/><circle cx="105" cy="85" r="45" fill="none" stroke="var(--ink)" stroke-dasharray="4"/><text x="90" y="160">? new point</text></svg>
+Look at the <i>k</i> closest known points and take a vote. <i>Real life:</i> “people like you also liked…”.</div>
+<div class="card"><h3>Decision tree</h3>
+<svg viewBox="0 0 220 170" role="img" aria-label="Decision tree for going outside"><g fill="none" stroke="var(--ink)" stroke-width="2"><rect x="60" y="8" width="100" height="30" rx="6"/><rect x="5" y="80" width="90" height="30" rx="6"/><rect x="125" y="80" width="90" height="30" rx="6"/><path d="M90 38L50 80M130 38L170 80"/></g><text x="72" y="28">Raining?</text><text x="20" y="100">Stay in</text><text x="132" y="100">Hot today?</text><text x="105" y="62">no</text><text x="60" y="62">yes</text><text x="125" y="150">yes: swim, no: park</text></svg>
+A flowchart of yes/no questions learned from data. Easy to explain, which is great for loans and medicine.</div>
+</div>
+<div class="exam"><b>Exam tip</b>Be ready to compare: decision trees are <i>transparent</i> (you can read the rules); neural networks are often a <i>black box</i>.</div>
+</section>
+
+<section id="clu">
+<span class="level l2">Core</span>
+<h2>Clustering with k-means</h2>
+<p>No labels here. The algorithm repeats two steps: <b>(1)</b> assign each point to the nearest centre, <b>(2)</b> move each centre to the middle of its group. Press the button and watch.</p>
+<div class="card"><svg id="kmsvg" viewBox="0 0 440 240" role="img" aria-label="k-means clustering animation"></svg>
+<div class="ctl"><button id="kstep">Next step</button><button id="kreset" style="background:var(--b)">Reset</button><span id="kinfo">Centres placed at random.</span></div></div>
+<div class="life"><b>Real life</b>A shop groups customers into “bargain hunters”, “weekend shoppers”, “big spenders” without anyone naming the groups first.</div>
+</section>
+
+<section id="fit">
+<span class="level l2">Core</span>
+<h2>Underfitting vs overfitting</h2>
+<svg viewBox="0 0 720 200" role="img" aria-label="Three fits: underfit straight line, good smooth curve, overfit wiggly curve">
+<g fill="var(--a)"><circle cx="30" cy="150" r="5"/><circle cx="60" cy="110" r="5"/><circle cx="90" cy="120" r="5"/><circle cx="120" cy="70" r="5"/><circle cx="150" cy="80" r="5"/><circle cx="190" cy="40" r="5"/></g>
+<path d="M20 130L205 90" stroke="var(--b)" stroke-width="3" fill="none"/>
+<g transform="translate(240 0)"><g fill="var(--a)"><circle cx="30" cy="150" r="5"/><circle cx="60" cy="110" r="5"/><circle cx="90" cy="120" r="5"/><circle cx="120" cy="70" r="5"/><circle cx="150" cy="80" r="5"/><circle cx="190" cy="40" r="5"/></g><path d="M20 155C70 105 100 110 130 75S180 50 205 35" stroke="var(--c)" stroke-width="3" fill="none"/></g>
+<g transform="translate(480 0)"><g fill="var(--a)"><circle cx="30" cy="150" r="5"/><circle cx="60" cy="110" r="5"/><circle cx="90" cy="120" r="5"/><circle cx="120" cy="70" r="5"/><circle cx="150" cy="80" r="5"/><circle cx="190" cy="40" r="5"/></g><path d="M20 150L30 150L45 130L60 110L75 135L90 120L105 90L120 70L135 95L150 80L170 55L190 40L205 20" stroke="var(--b)" stroke-width="3" fill="none"/></g>
+<text x="40" y="185">Underfit: too simple</text><text x="290" y="185">Good fit</text><text x="510" y="185">Overfit: memorised noise</text></svg>
+<div class="life"><b>Real life</b><b style="display:inline">Underfit</b> = only learning “study more = pass”. <b style="display:inline">Overfit</b> = memorising last year’s exact questions. <b style="display:inline">Good fit</b> = understanding the topic.</div>
+<p><b>Fixes for overfitting:</b> more data, a simpler model, stop training earlier, regularisation (penalise complexity), cross-validation (test on several different splits).</p>
+</section>
+
+<section id="eval">
+<span class="level l2">Core</span>
+<h2>Judging a model: the confusion matrix</h2>
+<p>A spam filter checks 100 emails. Of 45 real spam, it catches 40.</p>
+<div class="card" style="overflow-x:auto"><table>
+<tr><th></th><th>Predicted spam</th><th>Predicted not spam</th></tr>
+<tr><th>Actually spam</th><td class="tp">40<br><small>True positive</small></td><td class="fp">5<br><small>False negative</small></td></tr>
+<tr><th>Actually fine</th><td class="fp">10<br><small>False positive</small></td><td class="tp">45<br><small>True negative</small></td></tr></table></div>
+<div class="grid">
+<div class="card"><h3>Accuracy = 85%</h3>(TP+TN) ÷ all = 85 ÷ 100. Overall correct. Misleading if one class is rare.</div>
+<div class="card"><h3>Precision = 80%</h3>TP ÷ (TP+FP) = 40 ÷ 50. “When it says spam, is it?”</div>
+<div class="card"><h3>Recall = 89%</h3>TP ÷ (TP+FN) = 40 ÷ 45. “Of all real spam, how much did it catch?”</div>
+</div>
+<div class="life"><b>Real life</b>A cancer screening test should have high <b style="display:inline">recall</b> (don’t miss anyone). A spam filter wants high <b style="display:inline">precision</b> (don’t bin your exam results email).</div>
+</section>
+
+<section id="nn">
+<span class="level l3">Advanced</span>
+<h2>Neural networks</h2>
+<p>Inspired by the brain. Each <b>neuron</b> multiplies inputs by <b>weights</b>, adds them up, then applies an <b>activation function</b> to decide how strongly to “fire”. Hover over nothing, just read the layers below.</p>
+<div class="card"><svg id="nnsvg" viewBox="0 0 560 260" role="img" aria-label="Neural network with input, hidden and output layers"></svg></div>
+<div class="grid">
+<div class="card"><h3>Learning = tuning weights</h3><b>Gradient descent</b>: like walking downhill in fog to find the lowest error, one small step at a time. The <i>learning rate</i> is your step size: too big and you overshoot; too small and you take forever.</div>
+<div class="card"><h3>The training loop</h3>Forward pass (make a guess) → compute the loss (how wrong?) → <b>backpropagation</b> (work out which weights caused the error) → update weights → repeat for many <i>epochs</i>.</div>
+</div>
+<svg viewBox="0 0 700 150" role="img" aria-label="Loss curve with step sizes"><path d="M40 20C150 130 250 130 360 130S560 20 660 20" stroke="var(--ink)" stroke-width="2" fill="none" transform="translate(0 0)"/><circle cx="120" cy="86" r="7" fill="var(--b)"/><circle cx="200" cy="118" r="7" fill="var(--b)"/><circle cx="300" cy="129" r="7" fill="var(--c)"/><text x="60" y="70">start</text><text x="250" y="105">smaller steps</text><text x="280" y="148">minimum error</text></svg>
+<div class="life"><b>Real life</b>Learning to throw a basketball: each miss tells you to adjust a little (angle, force). Backpropagation is that feedback applied to millions of tiny “knobs”.</div>
+</section>
+
+<section id="dl">
+<span class="level l3">Advanced</span>
+<h2>Deep learning families</h2>
+<div class="grid">
+<div class="card"><h3>CNN</h3>Scans images with small filters: edges → shapes → faces. <i>Used in:</i> Face ID, medical scans, self-driving cars.</div>
+<div class="card"><h3>RNN / LSTM</h3>Has memory of earlier items in a sequence. <i>Used in:</i> older voice assistants, stock and weather forecasts.</div>
+<div class="card"><h3>Transformer</h3>Uses <b>attention</b> to see how all words relate at once. <i>Used in:</i> ChatGPT-style chatbots, Google Translate.</div>
+<div class="card"><h3>GAN</h3>Two networks compete: a forger and a detective. <i>Used in:</i> AI art and deepfakes.</div>
+</div>
+<p><b>Other advanced terms:</b> <i>transfer learning</i> (reuse a trained model for a new task), <i>natural language processing</i> (understanding text), <i>computer vision</i> (understanding images), <i>hyperparameters</i> (settings you choose before training, like k or learning rate).</p>
+</section>
+
+<section id="rl">
+<span class="level l3">Advanced</span>
+<h2>Reinforcement learning</h2>
+<svg viewBox="0 0 700 130" role="img" aria-label="Agent takes action in environment and receives reward and new state"><g fill="none" stroke="var(--ink)" stroke-width="2"><rect x="60" y="30" width="180" height="60" rx="10"/><rect x="460" y="30" width="180" height="60" rx="10"/><path d="M240 50H460M460 75H240"/></g><text x="110" y="65">Agent (learner)</text><text x="490" y="65">Environment</text><text x="290" y="44">action</text><text x="270" y="95">reward + new state</text></svg>
+<p>The agent tries actions, collects <b>rewards</b>, and learns a <b>policy</b> that maximises total reward. It must balance <b>exploration</b> (try new things) and <b>exploitation</b> (use what works).</p>
+<div class="life"><b>Real life</b>Training a puppy with treats. Or AlphaGo playing millions of games against itself.</div>
+</section>
+
+<section id="ethics">
+<span class="level l3">Advanced</span>
+<h2>Ethics, bias and society</h2>
+<div class="grid">
+<div class="card"><h3>Bias in data</h3>If a hiring tool learns from past hires that were mostly men, it may unfairly favour men. <b>Garbage in, garbage out.</b></div>
+<div class="card"><h3>Privacy</h3>Models need lots of personal data. Who owns it? Was consent given? How long is it kept?</div>
+<div class="card"><h3>Transparency</h3>If a black-box model rejects a loan, can the person get an explanation? This is “explainable AI”.</div>
+<div class="card"><h3>Accountability &amp; jobs</h3>Who is responsible when a self-driving car crashes? Which jobs will automation change?</div>
+</div>
+<div class="exam"><b>Exam tip</b>For discussion questions, name a <i>stakeholder</i> (user, company, society), give a <i>benefit</i> and a <i>risk</i>, then reach a justified conclusion.</div>
+</section>
+
+<footer>Check your school’s current IB Computer Science guide for the exact depth required. Good luck with your studies!</footer>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(p,t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt)e.textContent=txt;p.appendChild(e);return e}
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n);
+
+/* Regression demo */
+(function(){
+const pts=[[1,45],[2,52],[3,58],[4,66],[5,72],[6,80],[7,85]];
+const s=document.getElementById('regsvg'),X=x=>50+x*50,Y=y=>230-(y-20)*2.6;
+el(s,'path',{d:'M50 10V230H420',stroke:'currentColor','stroke-width':2,fill:'none',style:'color:var(--ink)'});
+el(s,'text',{x:300,y:253},'Hours studied');el(s,'text',{x:4,y:14},'Score');
+const line=el(s,'line',{stroke:'var(--b)','stroke-width':4});
+pts.forEach(p=>el(s,'circle',{cx:X(p[0]),cy:Y(p[1]),r:6,class:'pt'}));
+const m=document.getElementById('m'),b=document.getElementById('b');
+function up(){const mm=+m.value,bb=+b.value;
+line.setAttribute('x1',X(0));line.setAttribute('y1',Y(bb));line.setAttribute('x2',X(8));line.setAttribute('y2',Y(bb+8*mm));
+const e=pts.reduce((a,p)=>a+(p[1]-(bb+mm*p[0]))**2,0)/pts.length;
+mv.textContent=mm.toFixed(1);bv.textContent=bb.toFixed(1);mse.textContent=e.toFixed(1);
+msg.textContent=e<8?'Great fit!':e<60?'Getting closer…':'Far off. Keep adjusting.'}
+m.oninput=b.oninput=up;up()})();
+
+/* k-means demo */
+(function(){
+const s=document.getElementById('kmsvg');let seed=7;const r=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const cols=['var(--a)','var(--b)','var(--c)'];let P,C,asg,phase;
+function init(){seed=7;P=[];[[90,70],[330,70],[210,180]].forEach(c=>{for(let i=0;i<14;i++)P.push([c[0]+(r()-.5)*90,c[1]+(r()-.5)*80])});
+C=[[40,40],[60,200],[400,200]];asg=P.map(()=>-1);phase=0;kinfo.textContent='Centres placed at random.';draw()}
+function draw(){s.innerHTML='';P.forEach((p,i)=>el(s,'circle',{cx:p[0],cy:p[1],r:6,fill:asg[i]<0?'var(--mute)':cols[asg[i]]}));
+C.forEach((c,i)=>el(s,'rect',{x:c[0]-9,y:c[1]-9,width:18,height:18,fill:cols[i],stroke:'var(--ink)','stroke-width':3}))}
+kstep.onclick=()=>{if(phase%2==0){asg=P.map(p=>{let bi=0,bd=1e9;C.forEach((c,i)=>{const d=(c[0]-p[0])**2+(c[1]-p[1])**2;if(d<bd){bd=d;bi=i}});return bi});kinfo.textContent='Step: each point joins its nearest centre.'}
+else{C=C.map((c,i)=>{const m=P.filter((_,j)=>asg[j]==i);return m.length?[m.reduce((a,p)=>a+p[0],0)/m.length,m.reduce((a,p)=>a+p[1],0)/m.length]:c});kinfo.textContent='Step: centres move to the middle of their group.'}
+phase++;draw()};
+kreset.onclick=init;init()})();
+
+/* Neural net diagram */
+(function(){
+const s=document.getElementById('nnsvg'),L=[3,5,4,2],names=['Input','Hidden 1','Hidden 2','Output'];
+const pos=L.map((n,i)=>Array.from({length:n},(_,j)=>[70+i*140,130+(j-(n-1)/2)*44]));
+for(let i=0;i<3;i++)pos[i].forEach(a=>pos[i+1].forEach(c=>el(s,'line',{x1:a[0],y1:a[1],x2:c[0],y2:c[1],stroke:'var(--line)','stroke-width':1.5})));
+pos.forEach((l,i)=>{l.forEach(p=>el(s,'circle',{cx:p[0],cy:p[1],r:14,fill:['var(--c)','var(--a)','var(--a)','var(--b)'][i],stroke:'var(--ink)','stroke-width':2}));el(s,'text',{x:70+i*140-24,y:240},names[i])});
+['hours','sleep','stress'].forEach((t,j)=>el(s,'text',{x:2,y:pos[0][j][1]+4},t));
+el(s,'text',{x:500,y:pos[3][0][1]+4},'pass');el(s,'text',{x:500,y:pos[3][1][1]+4},'fail')})();
+</script>
+</body>
+</html>
